@@ -102,7 +102,7 @@ export function initializeTeams(teamNames: string[]): Team[] {
  * @returns Updated teams array
  */
 export function updateTeamStats(teams: Team[], game: Game): Team[] {
-  if (!game.isCompleted || game.homeScore === undefined || game.awayScore === undefined) {
+  if (!game.isCompleted || game.homeScore == null || game.awayScore == null) {
     return teams;
   }
 

@@ -133,7 +133,7 @@ export default function GameScheduler() {
     if (!game) return;
     
     // Validate scores are entered
-    if (game.homeScore === null || game.awayScore === null) {
+    if (game.homeScore == null || game.awayScore == null) {
       alert('Please enter scores for both teams before finishing the game.');
       return;
     }
@@ -388,7 +388,7 @@ export default function GameScheduler() {
                             type="number"
                             min="0"
                             max="20"
-                            value={game.homeScore ?? ''}
+                            value={game.homeScore == null ? '' : game.homeScore}
                             onChange={(e) => handleScoreUpdate(game.id, 'home', e.target.value)}
                             className="score-input"
                             placeholder="0"
@@ -399,7 +399,7 @@ export default function GameScheduler() {
                             type="number"
                             min="0"
                             max="20"
-                            value={game.awayScore ?? ''}
+                            value={game.awayScore == null ? '' : game.awayScore}
                             onChange={(e) => handleScoreUpdate(game.id, 'away', e.target.value)}
                             className="score-input"
                             placeholder="0"

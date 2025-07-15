@@ -17,11 +17,11 @@ export interface Game {
   id: string;
   homeTeam: string;
   awayTeam: string;
-  homeScore?: number;
-  awayScore?: number;
+  homeScore?: number | null;
+  awayScore?: number | null;
   isCompleted: boolean;
   round: number;
-  gameDate: string;
+  gameDate?: string;
 }
 
 export interface GameSession {
