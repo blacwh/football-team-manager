@@ -1,0 +1,365 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables - Yellow Branding */
+:root {
+  --primary-gradient: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  --secondary-gradient: linear-gradient(135deg, #fde047 0%, #ca8a04 100%);
+  --dark-gradient: linear-gradient(135deg, #854d0e 0%, #713f12 100%);
+  --hero-gradient: linear-gradient(135deg, #a16207 0%, #854d0e 100%);
+  --yellow-glow: 0 0 20px rgba(234, 179, 8, 0.3);
+  --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+  --yellow-shadow: 0 10px 25px rgba(234, 179, 8, 0.2);
+}
+
+/* Global Styles */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #333;
+  background: linear-gradient(135deg, #fefce8 0%, #fef9c3 100%);
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Custom Component Styles */
+.hero-section {
+  background: var(--hero-gradient);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/images/football-pattern.svg') center/cover;
+    opacity: 0.1;
+    z-index: 1;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.glass-card {
+  background: rgba(254, 252, 232, 0.25);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(250, 204, 21, 0.18);
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: var(--yellow-shadow);
+    transform: translateY(-5px);
+  }
+}
+
+.gradient-button {
+  background: var(--primary-gradient);
+  border: none;
+  color: #854d0e;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--yellow-shadow);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--yellow-glow);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.football-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  
+  &:hover {
+    box-shadow: var(--yellow-shadow);
+    transform: translateY(-3px);
+    border-color: #facc15;
+  }
+}
+
+.team-badge {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #854d0e;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin: 0 auto;
+  box-shadow: var(--yellow-shadow);
+  border: 3px solid #fde047;
+}
+
+.team-placeholder {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #fef9c3 0%, #facc15 100%);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #ca8a04;
+  margin-bottom: 1rem;
+  
+  .placeholder-icon {
+    font-size: 3rem;
+    color: #a16207;
+    margin-bottom: 0.5rem;
+  }
+  
+  .placeholder-text {
+    color: #854d0e;
+    font-weight: 600;
+    text-align: center;
+  }
+}
+
+.score-input {
+  width: 60px;
+  height: 40px;
+  text-align: center;
+  border: 2px solid #fde047;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: #fefce8;
+  
+  &:focus {
+    outline: none;
+    border-color: #facc15;
+    box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+  }
+}
+
+.game-duration-info {
+  background: linear-gradient(135deg, #fef9c3, #fde047);
+  border: 2px solid #facc15;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+  
+  .duration-title {
+    font-weight: 700;
+    color: #854d0e;
+    margin-bottom: 0.5rem;
+  }
+  
+  .duration-details {
+    color: #a16207;
+    font-size: 0.9rem;
+    
+    .highlight {
+      font-weight: 600;
+      color: #854d0e;
+    }
+  }
+}
+
+.league-table {
+  .table-header {
+    background: var(--primary-gradient);
+    color: #854d0e;
+    font-weight: 700;
+  }
+  
+  .table-row {
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: #fefce8;
+    }
+    
+    &.champion {
+      background: linear-gradient(90deg, #fef9c3, #fef9c3);
+      border-left: 4px solid #facc15;
+      box-shadow: var(--yellow-shadow);
+    }
+  }
+}
+
+.team-logo-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--secondary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  border: 3px solid #facc15;
+  box-shadow: var(--yellow-shadow);
+  
+  .logo-text {
+    color: #854d0e;
+    font-weight: 800;
+    font-size: 2rem;
+  }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 2rem 1rem;
+  }
+  
+  .football-card {
+    margin: 0.5rem;
+  }
+  
+  .team-badge {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+  
+  .score-input {
+    width: 50px;
+    height: 35px;
+    font-size: 1rem;
+  }
+  
+  .team-placeholder {
+    height: 150px;
+    
+    .placeholder-icon {
+      font-size: 2rem;
+    }
+  }
+}
+
+/* Animation Classes */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+
+.animate-bounce-soft {
+  animation: bounceSoft 1s ease-in-out infinite;
+}
+
+.animate-pulse-yellow {
+  animation: pulseYellow 2s ease-in-out infinite;
+}
+
+/* Loading States */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #fef9c3;
+  border-top: 4px solid #facc15;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes pulseYellow {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7);
+    transform: scale(1);
+  }
+  70% { 
+    box-shadow: 0 0 0 10px rgba(234, 179, 8, 0);
+    transform: scale(1.05);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fef9c3;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #facc15;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #eab308;
+}
+
+/* Yellow theme utilities */
+.text-team-primary {
+  color: #854d0e;
+}
+
+.bg-team-primary {
+  background-color: #facc15;
+}
+
+.border-team-primary {
+  border-color: #facc15;
+}
+
+.shadow-team {
+  box-shadow: var(--yellow-shadow);
+}
