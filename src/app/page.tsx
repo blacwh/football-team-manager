@@ -74,10 +74,15 @@ export default function HomePage() {
               transition={{ duration: 0.8 }}
               className="text-center lg:text-left"
             >
+              <div className="mb-6">
+                <div className="inline-block bg-yellow-400 text-yellow-900 px-6 py-2 rounded-full font-bold text-lg md:text-xl shadow-lg animate-pulse-yellow">
+                  ⚽ 80's Football Club ⚽
+                </div>
+              </div>
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 font-heading">
-                Master Your
+                Saturday Games
                 <span className="block bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent">
-                  Saturday Games
+                  Management
                 </span>
               </h1>
               <p className="text-xl text-blue-100 mb-8 max-w-2xl">

@@ -35,8 +35,8 @@ export default function Navbar() {
               <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center shadow-team">
                 <span className="text-yellow-900 font-bold text-sm">⚽</span>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-yellow-700 bg-clip-text text-transparent">
-                Football Team
+              <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-yellow-600 to-yellow-700 bg-clip-text text-transparent">
+                80's Football Club
               </span>
             </Link>
           </div>

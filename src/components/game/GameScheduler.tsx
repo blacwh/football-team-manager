@@ -196,17 +196,19 @@ export default function GameScheduler() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4 font-heading">
-          Game Scheduler
-        </h1>
-        <p className="text-xl text-gray-600">
-          Create and manage your Saturday football schedule
+      <div className="mb-8 text-center">
+        <div className="inline-block bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full font-bold text-sm mb-3">
+          ⚽ 80's Football Club ⚽
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading">Saturday Game Scheduler</h1>
+        <p className="text-base sm:text-lg text-gray-600">
+          Divide into teams and manage your Saturday football sessions
         </p>
-        
+      </div>
+      
         {/* Game Duration Info */}
-        <div className="game-duration-info mt-6">
-          <div className="duration-title">⏱️ Game Day Information</div>
+        <div className="game-duration-info mt-6 max-w-4xl mx-auto">
+          <div className="duration-title">⏱️ Saturday Session Information</div>
           <div className="duration-details">
             <div>• <span className="highlight">Game Duration:</span> 7 minutes per match</div>
             <div>• <span className="highlight">Total Games:</span> ~34 games to fill 4 hours</div>
@@ -419,13 +421,13 @@ export default function GameScheduler() {
                       {/* Mobile Layout */}
                       <div className="block sm:hidden space-y-4">
                         {/* Teams */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3 flex-1 min-w-0">
+                        <div className="space-y-4">
+                          <div className="flex items-center">
+                            <div className="flex items-center space-x-3 flex-1 min-w-0 pr-4">
                               <div className="team-badge w-8 h-8 text-xs flex-shrink-0">
-                                {game.homeTeam.charAt(0)}
+                                {game.homeTeam.length <= 3 ? game.homeTeam : game.homeTeam.charAt(0)}
                               </div>
-                              <span className="font-medium text-gray-900 truncate">{game.homeTeam}</span>
+                              <span className="font-medium text-gray-900 text-sm truncate">{game.homeTeam}</span>
                             </div>
                             <input
                               type="number"
@@ -433,17 +435,17 @@ export default function GameScheduler() {
                               max="20"
                               value={game.homeScore == null ? '' : game.homeScore}
                               onChange={(e) => handleScoreUpdate(game.id, 'home', e.target.value)}
-                              className="w-12 h-8 text-center border-2 border-yellow-300 rounded text-sm font-semibold bg-yellow-50 focus:outline-none focus:border-yellow-500"
+                              className="w-12 h-8 text-center border-2 border-yellow-300 rounded text-sm font-semibold bg-yellow-50 focus:outline-none focus:border-yellow-500 flex-shrink-0"
                               placeholder="0"
                               disabled={game.isCompleted}
                             />
                           </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3 flex-1 min-w-0">
+                          <div className="flex items-center">
+                            <div className="flex items-center space-x-3 flex-1 min-w-0 pr-4">
                               <div className="team-badge w-8 h-8 text-xs flex-shrink-0">
-                                {game.awayTeam.charAt(0)}
+                                {game.awayTeam.length <= 3 ? game.awayTeam : game.awayTeam.charAt(0)}
                               </div>
-                              <span className="font-medium text-gray-900 truncate">{game.awayTeam}</span>
+                              <span className="font-medium text-gray-900 text-sm truncate">{game.awayTeam}</span>
                             </div>
                             <input
                               type="number"
@@ -451,7 +453,7 @@ export default function GameScheduler() {
                               max="20"
                               value={game.awayScore == null ? '' : game.awayScore}
                               onChange={(e) => handleScoreUpdate(game.id, 'away', e.target.value)}
-                              className="w-12 h-8 text-center border-2 border-yellow-300 rounded text-sm font-semibold bg-yellow-50 focus:outline-none focus:border-yellow-500"
+                              className="w-12 h-8 text-center border-2 border-yellow-300 rounded text-sm font-semibold bg-yellow-50 focus:outline-none focus:border-yellow-500 flex-shrink-0"
                               placeholder="0"
                               disabled={game.isCompleted}
                             />
