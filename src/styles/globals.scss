@@ -261,27 +261,84 @@ a {
   }
   
   .football-card {
-    margin: 0.5rem;
+    margin: 0.25rem;
+    padding: 1rem;
   }
   
   .team-badge {
-    width: 50px;
-    height: 50px;
-    font-size: 1.2rem;
-  }
-  
-  .score-input {
-    width: 50px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     font-size: 1rem;
   }
   
+  .score-input {
+    width: 45px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+  
   .team-placeholder {
-    height: 150px;
+    height: 120px;
     
     .placeholder-icon {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
+    
+    .placeholder-text {
+      font-size: 0.8rem;
+    }
+  }
+  
+  /* Mobile game layout improvements */
+  .game-card-mobile {
+    .team-name {
+      font-size: 0.9rem;
+      max-width: 120px;
+    }
+    
+    .team-badge {
+      width: 32px;
+      height: 32px;
+      font-size: 0.8rem;
+    }
+  }
+  
+  /* Ensure buttons don't overflow */
+  .gradient-button {
+    white-space: nowrap;
+    font-size: 0.9rem;
+    padding: 10px 16px;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 480px) {
+  .football-card {
+    margin: 0.125rem;
+    padding: 0.75rem;
+  }
+  
+  .team-badge {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+  
+  .gradient-button {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+  }
+  
+  h3 {
+    font-size: 1.1rem;
   }
 }
 

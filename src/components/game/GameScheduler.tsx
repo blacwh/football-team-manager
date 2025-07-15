@@ -280,40 +280,83 @@ export default function GameScheduler() {
         /* Schedule Display */
         <div className="space-y-8">
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button
               onClick={handleSaveSession}
-              className="gradient-button inline-flex items-center px-6 py-3 font-semibold"
+              className="gradient-button inline-flex items-center justify-center px-4 sm:px-6 py-3 font-semibold text-sm sm:text-base"
             >
-              <CheckIcon className="w-5 h-5 mr-2" />
+              <CheckIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Save Session
             </button>
             <button
               onClick={handleReset}
-              className="inline-flex items-center px-6 py-3 font-semibold text-red-600 border-2 border-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all duration-300"
+              className="inline-flex items-center justify-center px-4 sm:px-6 py-3 font-semibold text-sm sm:text-base text-red-600 border-2 border-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all duration-300"
             >
-              <TrashIcon className="w-5 h-5 mr-2" />
+              <TrashIcon className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Reset
             </button>
           </div>
 
           {/* Current League Table */}
-          <div className="football-card p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Current Standings</h2>
-            <div className="overflow-x-auto">
+          <div className="football-card p-3 sm:p-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Current Standings</h2>
+            
+            {/* Mobile-friendly cards for small screens */}
+            <div className="block sm:hidden space-y-3">
+              {teams.map((team, index) => (
+                <div 
+                  key={team.id} 
+                  className={`bg-white border-2 rounded-lg p-4 ${index === 0 ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200'}`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-lg font-bold text-gray-500">#{index + 1}</span>
+                      <div className="team-badge w-8 h-8 text-xs">
+                        {team.name.charAt(0)}
+                      </div>
+                      <span className="font-medium text-gray-900 truncate">{team.name}</span>
+                    </div>
+                    <span className="text-xl font-bold text-yellow-600">{team.points} pts</span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2 text-sm text-center">
+                    <div>
+                      <div className="text-gray-500">P</div>
+                      <div className="font-medium">{team.gamesPlayed}</div>
+                    </div>
+                    <div>
+                      <div className="text-gray-500">W-D-L</div>
+                      <div className="font-medium">{team.wins}-{team.draws}-{team.losses}</div>
+                    </div>
+                    <div>
+                      <div className="text-gray-500">Goals</div>
+                      <div className="font-medium">{team.goalsFor}-{team.goalsAgainst}</div>
+                    </div>
+                    <div>
+                      <div className="text-gray-500">GD</div>
+                      <div className="font-medium">
+                        {team.goalsDifference > 0 ? '+' : ''}{team.goalsDifference}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop table for larger screens */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full league-table">
                 <thead>
                   <tr className="table-header">
-                    <th className="px-4 py-3 text-left">Pos</th>
-                    <th className="px-4 py-3 text-left">Team</th>
-                    <th className="px-4 py-3 text-center">P</th>
-                    <th className="px-4 py-3 text-center">W</th>
-                    <th className="px-4 py-3 text-center">D</th>
-                    <th className="px-4 py-3 text-center">L</th>
-                    <th className="px-4 py-3 text-center">GF</th>
-                    <th className="px-4 py-3 text-center">GA</th>
-                    <th className="px-4 py-3 text-center">GD</th>
-                    <th className="px-4 py-3 text-center">Pts</th>
+                    <th className="px-2 lg:px-4 py-3 text-left">Pos</th>
+                    <th className="px-2 lg:px-4 py-3 text-left">Team</th>
+                    <th className="px-2 lg:px-4 py-3 text-center">P</th>
+                    <th className="px-2 lg:px-4 py-3 text-center">W</th>
+                    <th className="px-2 lg:px-4 py-3 text-center">D</th>
+                    <th className="px-2 lg:px-4 py-3 text-center">L</th>
+                    <th className="px-2 lg:px-4 py-3 text-center">GF</th>
+                    <th className="px-2 lg:px-4 py-3 text-center">GA</th>
+                    <th className="px-2 lg:px-4 py-3 text-center">GD</th>
+                    <th className="px-2 lg:px-4 py-3 text-center">Pts</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -322,25 +365,25 @@ export default function GameScheduler() {
                       key={team.id} 
                       className={`table-row ${index === 0 ? 'champion' : ''}`}
                     >
-                      <td className="px-4 py-3 font-bold">{index + 1}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="team-badge w-8 h-8 text-xs">
+                      <td className="px-2 lg:px-4 py-3 font-bold">{index + 1}</td>
+                      <td className="px-2 lg:px-4 py-3">
+                        <div className="flex items-center space-x-2 lg:space-x-3">
+                          <div className="team-badge w-6 h-6 lg:w-8 lg:h-8 text-xs">
                             {team.name.charAt(0)}
                           </div>
-                          <span className="font-medium">{team.name}</span>
+                          <span className="font-medium text-sm lg:text-base truncate">{team.name}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-center">{team.gamesPlayed}</td>
-                      <td className="px-4 py-3 text-center">{team.wins}</td>
-                      <td className="px-4 py-3 text-center">{team.draws}</td>
-                      <td className="px-4 py-3 text-center">{team.losses}</td>
-                      <td className="px-4 py-3 text-center">{team.goalsFor}</td>
-                      <td className="px-4 py-3 text-center">{team.goalsAgainst}</td>
-                      <td className="px-4 py-3 text-center font-medium">
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.gamesPlayed}</td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.wins}</td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.draws}</td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.losses}</td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.goalsFor}</td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.goalsAgainst}</td>
+                      <td className="px-2 lg:px-4 py-3 text-center font-medium text-sm lg:text-base">
                         {team.goalsDifference > 0 ? '+' : ''}{team.goalsDifference}
                       </td>
-                      <td className="px-4 py-3 text-center font-bold text-lg text-yellow-600">
+                      <td className="px-2 lg:px-4 py-3 text-center font-bold text-lg text-yellow-600">
                         {team.points}
                       </td>
                     </tr>
@@ -359,31 +402,75 @@ export default function GameScheduler() {
                 </h3>
                 <div className="space-y-4">
                   {roundGames.map((game, gameIndex) => (
-                    <div key={game.id} className="bg-gray-50 rounded-lg p-6 border-2 border-gray-200">
+                    <div key={game.id} className="bg-gray-50 rounded-lg p-3 sm:p-6 border-2 border-gray-200">
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm font-medium text-gray-500">
-                          Game {gameIndex + 1} • 7 minutes
+                        <span className="text-xs sm:text-sm font-medium text-gray-500">
+                          Game {gameIndex + 1} • 7 min
                         </span>
-                        <span className={`px-3 py-1 text-sm font-medium rounded-full ${
+                        <span className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full ${
                           game.isCompleted 
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-yellow-100 text-yellow-800'
                         }`}>
-                          {game.isCompleted ? 'Final' : 'In Progress'}
+                          {game.isCompleted ? 'Final' : 'Live'}
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between">
+                      {/* Mobile Layout */}
+                      <div className="block sm:hidden space-y-4">
+                        {/* Teams */}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3 flex-1 min-w-0">
+                              <div className="team-badge w-8 h-8 text-xs flex-shrink-0">
+                                {game.homeTeam.charAt(0)}
+                              </div>
+                              <span className="font-medium text-gray-900 truncate">{game.homeTeam}</span>
+                            </div>
+                            <input
+                              type="number"
+                              min="0"
+                              max="20"
+                              value={game.homeScore == null ? '' : game.homeScore}
+                              onChange={(e) => handleScoreUpdate(game.id, 'home', e.target.value)}
+                              className="w-12 h-8 text-center border-2 border-yellow-300 rounded text-sm font-semibold bg-yellow-50 focus:outline-none focus:border-yellow-500"
+                              placeholder="0"
+                              disabled={game.isCompleted}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3 flex-1 min-w-0">
+                              <div className="team-badge w-8 h-8 text-xs flex-shrink-0">
+                                {game.awayTeam.charAt(0)}
+                              </div>
+                              <span className="font-medium text-gray-900 truncate">{game.awayTeam}</span>
+                            </div>
+                            <input
+                              type="number"
+                              min="0"
+                              max="20"
+                              value={game.awayScore == null ? '' : game.awayScore}
+                              onChange={(e) => handleScoreUpdate(game.id, 'away', e.target.value)}
+                              className="w-12 h-8 text-center border-2 border-yellow-300 rounded text-sm font-semibold bg-yellow-50 focus:outline-none focus:border-yellow-500"
+                              placeholder="0"
+                              disabled={game.isCompleted}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Desktop Layout */}
+                      <div className="hidden sm:flex items-center justify-between">
                         {/* Home Team */}
-                        <div className="flex items-center space-x-3 flex-1">
-                          <div className="team-badge w-12 h-12 text-sm">
+                        <div className="flex items-center space-x-3 flex-1 min-w-0">
+                          <div className="team-badge w-12 h-12 text-sm flex-shrink-0">
                             {game.homeTeam.charAt(0)}
                           </div>
-                          <span className="font-medium text-gray-900">{game.homeTeam}</span>
+                          <span className="font-medium text-gray-900 truncate">{game.homeTeam}</span>
                         </div>
 
                         {/* Score Inputs */}
-                        <div className="flex items-center space-x-4 mx-6">
+                        <div className="flex items-center space-x-2 sm:space-x-4 mx-3 sm:mx-6 flex-shrink-0">
                           <input
                             type="number"
                             min="0"
@@ -394,7 +481,7 @@ export default function GameScheduler() {
                             placeholder="0"
                             disabled={game.isCompleted}
                           />
-                          <span className="text-2xl font-bold text-gray-400">-</span>
+                          <span className="text-xl sm:text-2xl font-bold text-gray-400">-</span>
                           <input
                             type="number"
                             min="0"
@@ -408,9 +495,9 @@ export default function GameScheduler() {
                         </div>
 
                         {/* Away Team */}
-                        <div className="flex items-center space-x-3 flex-1 justify-end">
-                          <span className="font-medium text-gray-900">{game.awayTeam}</span>
-                          <div className="team-badge w-12 h-12 text-sm">
+                        <div className="flex items-center space-x-3 flex-1 justify-end min-w-0">
+                          <span className="font-medium text-gray-900 truncate">{game.awayTeam}</span>
+                          <div className="team-badge w-12 h-12 text-sm flex-shrink-0">
                             {game.awayTeam.charAt(0)}
                           </div>
                         </div>
@@ -421,7 +508,7 @@ export default function GameScheduler() {
                         <div className="mt-4 text-center">
                           <button
                             onClick={() => handleFinishGame(game.id)}
-                            className="gradient-button inline-flex items-center px-6 py-2 font-semibold text-sm"
+                            className="gradient-button inline-flex items-center px-4 sm:px-6 py-2 font-semibold text-sm"
                           >
                             <FlagIcon className="w-4 h-4 mr-2" />
                             Finish Game
