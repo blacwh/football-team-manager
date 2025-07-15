@@ -238,7 +238,7 @@ export default function GameScheduler() {
       <div className="mb-8 text-center">
         <div className="mb-8 text-center">
           <div className="inline-block bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full font-bold text-sm mb-3">
-            ⚽ 80&#39s Football Club ⚽
+            ⚽ 80&#39;s Football Club ⚽
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading">
             Saturday Game Scheduler

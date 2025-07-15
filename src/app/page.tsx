@@ -76,7 +76,7 @@ export default function HomePage() {
             >
               <div className="mb-6">
                 <div className="inline-block bg-yellow-400 text-yellow-900 px-6 py-2 rounded-full font-bold text-lg md:text-xl shadow-lg animate-pulse-yellow">
-                  ⚽ 80's Football Club ⚽
+                  ⚽ 80&#39;s Football Club ⚽
                 </div>
               </div>
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 font-heading">
