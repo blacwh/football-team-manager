@@ -1,22 +1,40 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Team, Game, GameSession } from '@/types';
-import { initializeTeams, updateTeamStats, sortTeamsByRanking } from '@/utils/scheduleGenerator';
-import { PlusIcon, TrashIcon, PlayIcon, CheckIcon, FlagIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from "react";
+import { Team, Game, GameSession } from "@/types";
+import {
+  initializeTeams,
+  updateTeamStats,
+  sortTeamsByRanking,
+} from "@/utils/scheduleGenerator";
+import {
+  PlusIcon,
+  TrashIcon,
+  PlayIcon,
+  CheckIcon,
+  FlagIcon,
+} from "@heroicons/react/24/outline";
 
 export default function GameScheduler() {
   const [numTeams, setNumTeams] = useState<number>(4);
-  const [teamNames, setTeamNames] = useState<string[]>(['Team A', 'Team B', 'Team C', 'Team D']);
+  const [teamNames, setTeamNames] = useState<string[]>([
+    "Team A",
+    "Team B",
+    "Team C",
+    "Team D",
+  ]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [games, setGames] = useState<Game[]>([]);
-  const [currentSession, setCurrentSession] = useState<GameSession | null>(null);
+  const [currentSession, setCurrentSession] = useState<GameSession | null>(
+    null
+  );
   const [isScheduled, setIsScheduled] = useState(false);
 
   // Initialize team names when number of teams changes
   useEffect(() => {
-    const newTeamNames = Array.from({ length: numTeams }, (_, i) => 
-      teamNames[i] || `Team ${String.fromCharCode(65 + i)}`
+    const newTeamNames = Array.from(
+      { length: numTeams },
+      (_, i) => teamNames[i] || `Team ${String.fromCharCode(65 + i)}`
     );
     setTeamNames(newTeamNames);
   }, [numTeams]);
@@ -34,13 +52,17 @@ export default function GameScheduler() {
     const teams = teamNames.slice(0, numTeams);
     let gameId = 1;
     const targetGames = 34; // 4 hours ÷ 7 minutes ≈ 34 games
-    
+
     if (numTeams === 3) {
       // For 3 teams: A-B, B-C, C-A (3 games per round)
       // Need ~11-12 rounds to reach 34 games
-      const basePairs = [[0, 1], [1, 2], [2, 0]];
+      const basePairs = [
+        [0, 1],
+        [1, 2],
+        [2, 0],
+      ];
       const roundsNeeded = Math.ceil(targetGames / 3);
-      
+
       for (let round = 1; round <= roundsNeeded; round++) {
         basePairs.forEach((pair, pairIndex) => {
           if (gameId <= targetGames) {
@@ -59,9 +81,16 @@ export default function GameScheduler() {
     } else if (numTeams === 4) {
       // For 4 teams: A-B, C-D, A-C, B-D, A-D, B-C (6 games per round)
       // Need ~6 rounds to reach 34+ games
-      const basePairs = [[0, 1], [2, 3], [0, 2], [1, 3], [0, 3], [1, 2]];
+      const basePairs = [
+        [0, 1],
+        [2, 3],
+        [0, 2],
+        [1, 3],
+        [0, 3],
+        [1, 2],
+      ];
       const roundsNeeded = Math.ceil(targetGames / 6);
-      
+
       for (let round = 1; round <= roundsNeeded; round++) {
         basePairs.forEach((pair, pairIndex) => {
           if (gameId <= targetGames) {
@@ -85,14 +114,16 @@ export default function GameScheduler() {
   // Generate schedule
   const handleGenerateSchedule = () => {
     try {
-      const filteredTeamNames = teamNames.slice(0, numTeams).filter(name => name.trim());
+      const filteredTeamNames = teamNames
+        .slice(0, numTeams)
+        .filter((name) => name.trim());
       const generatedGames = generateSequentialSchedule();
       const initializedTeams = initializeTeams(filteredTeamNames);
-      
+
       const sessionId = `session_${Date.now()}`;
       const newSession: GameSession = {
         id: sessionId,
-        date: new Date().toISOString().split('T')[0],
+        date: new Date().toISOString().split("T")[0],
         teams: initializedTeams,
         games: generatedGames,
         isCompleted: false,
@@ -104,20 +135,24 @@ export default function GameScheduler() {
       setCurrentSession(newSession);
       setIsScheduled(true);
     } catch (error) {
-      console.error('Error generating schedule:', error);
-      alert('Error generating schedule. Please check your team setup.');
+      console.error("Error generating schedule:", error);
+      alert("Error generating schedule. Please check your team setup.");
     }
   };
 
   // Update game score (but don't finalize yet)
-  const handleScoreUpdate = (gameId: string, field: 'home' | 'away', value: string) => {
-    const score = value === '' ? null : parseInt(value);
-    
-    const updatedGames = games.map(game => {
+  const handleScoreUpdate = (
+    gameId: string,
+    field: "home" | "away",
+    value: string
+  ) => {
+    const score = value === "" ? null : parseInt(value);
+
+    const updatedGames = games.map((game) => {
       if (game.id === gameId) {
         return {
           ...game,
-          [field === 'home' ? 'homeScore' : 'awayScore']: score,
+          [field === "home" ? "homeScore" : "awayScore"]: score,
         };
       }
       return game;
@@ -128,18 +163,18 @@ export default function GameScheduler() {
 
   // Finish game and update league table
   const handleFinishGame = (gameId: string) => {
-    const game = games.find(g => g.id === gameId);
-    
+    const game = games.find((g) => g.id === gameId);
+
     if (!game) return;
-    
+
     // Validate scores are entered
     if (game.homeScore == null || game.awayScore == null) {
-      alert('Please enter scores for both teams before finishing the game.');
+      alert("Please enter scores for both teams before finishing the game.");
       return;
     }
 
     // Mark game as completed
-    const updatedGames = games.map(g => {
+    const updatedGames = games.map((g) => {
       if (g.id === gameId) {
         return { ...g, isCompleted: true };
       }
@@ -149,7 +184,7 @@ export default function GameScheduler() {
     // Update team stats
     const finishedGame = { ...game, isCompleted: true };
     const updatedTeams = updateTeamStats(teams, finishedGame);
-    
+
     setGames(updatedGames);
     setTeams(sortTeamsByRanking(updatedTeams));
   };
@@ -166,23 +201,27 @@ export default function GameScheduler() {
   const handleSaveSession = () => {
     if (!currentSession) return;
 
-    const savedSessions = JSON.parse(localStorage.getItem('gameSessions') || '[]');
+    const savedSessions = JSON.parse(
+      localStorage.getItem("gameSessions") || "[]"
+    );
     const updatedSession = {
       ...currentSession,
       teams,
       games,
-      isCompleted: games.every(game => game.isCompleted),
+      isCompleted: games.every((game) => game.isCompleted),
     };
-    
-    const existingIndex = savedSessions.findIndex((s: GameSession) => s.id === currentSession.id);
+
+    const existingIndex = savedSessions.findIndex(
+      (s: GameSession) => s.id === currentSession.id
+    );
     if (existingIndex >= 0) {
       savedSessions[existingIndex] = updatedSession;
     } else {
       savedSessions.push(updatedSession);
     }
 
-    localStorage.setItem('gameSessions', JSON.stringify(savedSessions));
-    alert('Session saved successfully!');
+    localStorage.setItem("gameSessions", JSON.stringify(savedSessions));
+    alert("Session saved successfully!");
   };
 
   // Group games by round for better display
@@ -197,23 +236,40 @@ export default function GameScheduler() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8 text-center">
-        <div className="inline-block bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full font-bold text-sm mb-3">
-          ⚽ 80's Football Club ⚽
+        <div className="mb-8 text-center">
+          <div className="inline-block bg-yellow-400 text-yellow-900 px-4 py-1 rounded-full font-bold text-sm mb-3">
+            ⚽ 80&#39s Football Club ⚽
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading">
+            Saturday Game Scheduler
+          </h1>
+          <p className="text-base sm:text-lg text-gray-600">
+            Divide into teams and manage your Saturday football sessions
+          </p>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading">Saturday Game Scheduler</h1>
-        <p className="text-base sm:text-lg text-gray-600">
-          Divide into teams and manage your Saturday football sessions
-        </p>
-      </div>
-      
+
         {/* Game Duration Info */}
         <div className="game-duration-info mt-6 max-w-4xl mx-auto">
           <div className="duration-title">⏱️ Saturday Session Information</div>
           <div className="duration-details">
-            <div>• <span className="highlight">Game Duration:</span> 7 minutes per match</div>
-            <div>• <span className="highlight">Total Games:</span> ~34 games to fill 4 hours</div>
-            <div>• <span className="highlight">Format:</span> Sequential games (one at a time)</div>
-            <div>• <span className="highlight">Rounds:</span> {numTeams === 3 ? '~12 rounds (3 games each)' : '~6 rounds (6 games each)'}</div>
+            <div>
+              • <span className="highlight">Game Duration:</span> 7 minutes per
+              match
+            </div>
+            <div>
+              • <span className="highlight">Total Games:</span> ~34 games to
+              fill 4 hours
+            </div>
+            <div>
+              • <span className="highlight">Format:</span> Sequential games (one
+              at a time)
+            </div>
+            <div>
+              • <span className="highlight">Rounds:</span>{" "}
+              {numTeams === 3
+                ? "~12 rounds (3 games each)"
+                : "~6 rounds (6 games each)"}
+            </div>
           </div>
         </div>
       </div>
@@ -222,7 +278,7 @@ export default function GameScheduler() {
         /* Setup Form */
         <div className="football-card p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Setup Teams</h2>
-          
+
           {/* Number of Teams */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -251,17 +307,21 @@ export default function GameScheduler() {
                     <div className="placeholder-icon">📸</div>
                     <div className="placeholder-text">Team Photo</div>
                   </div>
-                  
+
                   {/* Team Logo Placeholder */}
                   <div className="team-logo-placeholder">
-                    <div className="logo-text">{String.fromCharCode(65 + index)}</div>
+                    <div className="logo-text">
+                      {String.fromCharCode(65 + index)}
+                    </div>
                   </div>
-                  
+
                   {/* Team Name Input */}
                   <input
                     type="text"
-                    value={teamNames[index] || ''}
-                    onChange={(e) => handleTeamNameChange(index, e.target.value)}
+                    value={teamNames[index] || ""}
+                    onChange={(e) =>
+                      handleTeamNameChange(index, e.target.value)
+                    }
                     placeholder={`Team ${String.fromCharCode(65 + index)}`}
                     className="w-full px-3 py-2 border-2 border-yellow-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 text-center font-semibold bg-yellow-50"
                   />
@@ -301,24 +361,36 @@ export default function GameScheduler() {
 
           {/* Current League Table */}
           <div className="football-card p-3 sm:p-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Current Standings</h2>
-            
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
+              Current Standings
+            </h2>
+
             {/* Mobile-friendly cards for small screens */}
             <div className="block sm:hidden space-y-3">
               {teams.map((team, index) => (
-                <div 
-                  key={team.id} 
-                  className={`bg-white border-2 rounded-lg p-4 ${index === 0 ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200'}`}
+                <div
+                  key={team.id}
+                  className={`bg-white border-2 rounded-lg p-4 ${
+                    index === 0
+                      ? "border-yellow-400 bg-yellow-50"
+                      : "border-gray-200"
+                  }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-3">
-                      <span className="text-lg font-bold text-gray-500">#{index + 1}</span>
+                      <span className="text-lg font-bold text-gray-500">
+                        #{index + 1}
+                      </span>
                       <div className="team-badge w-8 h-8 text-xs">
                         {team.name.charAt(0)}
                       </div>
-                      <span className="font-medium text-gray-900 truncate">{team.name}</span>
+                      <span className="font-medium text-gray-900 truncate">
+                        {team.name}
+                      </span>
                     </div>
-                    <span className="text-xl font-bold text-yellow-600">{team.points} pts</span>
+                    <span className="text-xl font-bold text-yellow-600">
+                      {team.points} pts
+                    </span>
                   </div>
                   <div className="grid grid-cols-4 gap-2 text-sm text-center">
                     <div>
@@ -327,16 +399,21 @@ export default function GameScheduler() {
                     </div>
                     <div>
                       <div className="text-gray-500">W-D-L</div>
-                      <div className="font-medium">{team.wins}-{team.draws}-{team.losses}</div>
+                      <div className="font-medium">
+                        {team.wins}-{team.draws}-{team.losses}
+                      </div>
                     </div>
                     <div>
                       <div className="text-gray-500">Goals</div>
-                      <div className="font-medium">{team.goalsFor}-{team.goalsAgainst}</div>
+                      <div className="font-medium">
+                        {team.goalsFor}-{team.goalsAgainst}
+                      </div>
                     </div>
                     <div>
                       <div className="text-gray-500">GD</div>
                       <div className="font-medium">
-                        {team.goalsDifference > 0 ? '+' : ''}{team.goalsDifference}
+                        {team.goalsDifference > 0 ? "+" : ""}
+                        {team.goalsDifference}
                       </div>
                     </div>
                   </div>
@@ -363,27 +440,44 @@ export default function GameScheduler() {
                 </thead>
                 <tbody>
                   {teams.map((team, index) => (
-                    <tr 
-                      key={team.id} 
-                      className={`table-row ${index === 0 ? 'champion' : ''}`}
+                    <tr
+                      key={team.id}
+                      className={`table-row ${index === 0 ? "champion" : ""}`}
                     >
-                      <td className="px-2 lg:px-4 py-3 font-bold">{index + 1}</td>
+                      <td className="px-2 lg:px-4 py-3 font-bold">
+                        {index + 1}
+                      </td>
                       <td className="px-2 lg:px-4 py-3">
                         <div className="flex items-center space-x-2 lg:space-x-3">
                           <div className="team-badge w-6 h-6 lg:w-8 lg:h-8 text-xs">
                             {team.name.charAt(0)}
                           </div>
-                          <span className="font-medium text-sm lg:text-base truncate">{team.name}</span>
+                          <span className="font-medium text-sm lg:text-base truncate">
+                            {team.name}
+                          </span>
                         </div>
                       </td>
-                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.gamesPlayed}</td>
-                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.wins}</td>
-                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.draws}</td>
-                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.losses}</td>
-                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.goalsFor}</td>
-                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">{team.goalsAgainst}</td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">
+                        {team.gamesPlayed}
+                      </td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">
+                        {team.wins}
+                      </td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">
+                        {team.draws}
+                      </td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">
+                        {team.losses}
+                      </td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">
+                        {team.goalsFor}
+                      </td>
+                      <td className="px-2 lg:px-4 py-3 text-center text-sm lg:text-base">
+                        {team.goalsAgainst}
+                      </td>
                       <td className="px-2 lg:px-4 py-3 text-center font-medium text-sm lg:text-base">
-                        {team.goalsDifference > 0 ? '+' : ''}{team.goalsDifference}
+                        {team.goalsDifference > 0 ? "+" : ""}
+                        {team.goalsDifference}
                       </td>
                       <td className="px-2 lg:px-4 py-3 text-center font-bold text-lg text-yellow-600">
                         {team.points}
@@ -404,17 +498,22 @@ export default function GameScheduler() {
                 </h3>
                 <div className="space-y-4">
                   {roundGames.map((game, gameIndex) => (
-                    <div key={game.id} className="bg-gray-50 rounded-lg p-3 sm:p-6 border-2 border-gray-200">
+                    <div
+                      key={game.id}
+                      className="bg-gray-50 rounded-lg p-3 sm:p-6 border-2 border-gray-200"
+                    >
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-xs sm:text-sm font-medium text-gray-500">
                           Game {gameIndex + 1} • 7 min
                         </span>
-                        <span className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full ${
-                          game.isCompleted 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {game.isCompleted ? 'Final' : 'Live'}
+                        <span
+                          className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full ${
+                            game.isCompleted
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {game.isCompleted ? "Final" : "Live"}
                         </span>
                       </div>
 
@@ -425,16 +524,28 @@ export default function GameScheduler() {
                           <div className="flex items-center">
                             <div className="flex items-center space-x-3 flex-1 min-w-0 pr-4">
                               <div className="team-badge w-8 h-8 text-xs flex-shrink-0">
-                                {game.homeTeam.length <= 3 ? game.homeTeam : game.homeTeam.charAt(0)}
+                                {game.homeTeam.length <= 3
+                                  ? game.homeTeam
+                                  : game.homeTeam.charAt(0)}
                               </div>
-                              <span className="font-medium text-gray-900 text-sm truncate">{game.homeTeam}</span>
+                              <span className="font-medium text-gray-900 text-sm truncate">
+                                {game.homeTeam}
+                              </span>
                             </div>
                             <input
                               type="number"
                               min="0"
                               max="20"
-                              value={game.homeScore == null ? '' : game.homeScore}
-                              onChange={(e) => handleScoreUpdate(game.id, 'home', e.target.value)}
+                              value={
+                                game.homeScore == null ? "" : game.homeScore
+                              }
+                              onChange={(e) =>
+                                handleScoreUpdate(
+                                  game.id,
+                                  "home",
+                                  e.target.value
+                                )
+                              }
                               className="w-12 h-8 text-center border-2 border-yellow-300 rounded text-sm font-semibold bg-yellow-50 focus:outline-none focus:border-yellow-500 flex-shrink-0"
                               placeholder="0"
                               disabled={game.isCompleted}
@@ -443,16 +554,28 @@ export default function GameScheduler() {
                           <div className="flex items-center">
                             <div className="flex items-center space-x-3 flex-1 min-w-0 pr-4">
                               <div className="team-badge w-8 h-8 text-xs flex-shrink-0">
-                                {game.awayTeam.length <= 3 ? game.awayTeam : game.awayTeam.charAt(0)}
+                                {game.awayTeam.length <= 3
+                                  ? game.awayTeam
+                                  : game.awayTeam.charAt(0)}
                               </div>
-                              <span className="font-medium text-gray-900 text-sm truncate">{game.awayTeam}</span>
+                              <span className="font-medium text-gray-900 text-sm truncate">
+                                {game.awayTeam}
+                              </span>
                             </div>
                             <input
                               type="number"
                               min="0"
                               max="20"
-                              value={game.awayScore == null ? '' : game.awayScore}
-                              onChange={(e) => handleScoreUpdate(game.id, 'away', e.target.value)}
+                              value={
+                                game.awayScore == null ? "" : game.awayScore
+                              }
+                              onChange={(e) =>
+                                handleScoreUpdate(
+                                  game.id,
+                                  "away",
+                                  e.target.value
+                                )
+                              }
                               className="w-12 h-8 text-center border-2 border-yellow-300 rounded text-sm font-semibold bg-yellow-50 focus:outline-none focus:border-yellow-500 flex-shrink-0"
                               placeholder="0"
                               disabled={game.isCompleted}
@@ -468,7 +591,9 @@ export default function GameScheduler() {
                           <div className="team-badge w-12 h-12 text-sm flex-shrink-0">
                             {game.homeTeam.charAt(0)}
                           </div>
-                          <span className="font-medium text-gray-900 truncate">{game.homeTeam}</span>
+                          <span className="font-medium text-gray-900 truncate">
+                            {game.homeTeam}
+                          </span>
                         </div>
 
                         {/* Score Inputs */}
@@ -477,19 +602,25 @@ export default function GameScheduler() {
                             type="number"
                             min="0"
                             max="20"
-                            value={game.homeScore == null ? '' : game.homeScore}
-                            onChange={(e) => handleScoreUpdate(game.id, 'home', e.target.value)}
+                            value={game.homeScore == null ? "" : game.homeScore}
+                            onChange={(e) =>
+                              handleScoreUpdate(game.id, "home", e.target.value)
+                            }
                             className="score-input"
                             placeholder="0"
                             disabled={game.isCompleted}
                           />
-                          <span className="text-xl sm:text-2xl font-bold text-gray-400">-</span>
+                          <span className="text-xl sm:text-2xl font-bold text-gray-400">
+                            -
+                          </span>
                           <input
                             type="number"
                             min="0"
                             max="20"
-                            value={game.awayScore == null ? '' : game.awayScore}
-                            onChange={(e) => handleScoreUpdate(game.id, 'away', e.target.value)}
+                            value={game.awayScore == null ? "" : game.awayScore}
+                            onChange={(e) =>
+                              handleScoreUpdate(game.id, "away", e.target.value)
+                            }
                             className="score-input"
                             placeholder="0"
                             disabled={game.isCompleted}
@@ -498,7 +629,9 @@ export default function GameScheduler() {
 
                         {/* Away Team */}
                         <div className="flex items-center space-x-3 flex-1 justify-end min-w-0">
-                          <span className="font-medium text-gray-900 truncate">{game.awayTeam}</span>
+                          <span className="font-medium text-gray-900 truncate">
+                            {game.awayTeam}
+                          </span>
                           <div className="team-badge w-12 h-12 text-sm flex-shrink-0">
                             {game.awayTeam.charAt(0)}
                           </div>
