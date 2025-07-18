@@ -1,7 +1,10 @@
 import { Team, Game } from '@/types';
 
 /**
- * Generate a round-robin schedule ensuring no team rests more than 2 times consecutively
+ * Generate a round-robin schedule using the circle method.
+ * A "BYE" placeholder is added when the team count is odd and any games
+ * involving the BYE are skipped. This implementation does not currently
+ * enforce a limit on consecutive rest periods for teams.
  * @param teamNames Array of team names
  * @returns Array of games with proper scheduling
  */
