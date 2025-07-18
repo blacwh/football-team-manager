@@ -66,11 +66,14 @@ export default function GameScheduler() {
       for (let round = 1; round <= roundsNeeded; round++) {
         basePairs.forEach((pair, pairIndex) => {
           if (gameId <= targetGames) {
+            const homeIndex = (round + pairIndex) % 2 === 0 ? pair[0] : pair[1];
+            const awayIndex = (round + pairIndex) % 2 === 0 ? pair[1] : pair[0];
+
             schedule.push({
               id: `game_${gameId++}`,
               round: round,
-              homeTeam: teams[pair[0]],
-              awayTeam: teams[pair[1]],
+              homeTeam: teams[homeIndex],
+              awayTeam: teams[awayIndex],
               homeScore: null,
               awayScore: null,
               isCompleted: false,
@@ -94,11 +97,14 @@ export default function GameScheduler() {
       for (let round = 1; round <= roundsNeeded; round++) {
         basePairs.forEach((pair, pairIndex) => {
           if (gameId <= targetGames) {
+            const homeIndex = (round + pairIndex) % 2 === 0 ? pair[0] : pair[1];
+            const awayIndex = (round + pairIndex) % 2 === 0 ? pair[1] : pair[0];
+
             schedule.push({
               id: `game_${gameId++}`,
               round: round,
-              homeTeam: teams[pair[0]],
-              awayTeam: teams[pair[1]],
+              homeTeam: teams[homeIndex],
+              awayTeam: teams[awayIndex],
               homeScore: null,
               awayScore: null,
               isCompleted: false,
