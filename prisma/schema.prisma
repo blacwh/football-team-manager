@@ -1,0 +1,148 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Player model - Both formal members and visitors
+model Player {
+  id               String   @id @default(cuid())
+  name             String
+  jerseyNumber     Int?     @map("jersey_number")
+  isFormalMember   Boolean  @default(false) @map("is_formal_member")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  teamPlayers      TeamPlayer[]
+  goals            Goal[]
+  
+  @@map("players")
+}
+
+// Season model - Yearly seasons
+model Season {
+  id               String   @id @default(cuid())
+  name             String   @unique // e.g., "2024 Season", "2025 Season"
+  startDate        DateTime @map("start_date")
+  endDate          DateTime @map("end_date")
+  isActive         Boolean  @default(true) @map("is_active")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  weekendSessions  WeekendSession[]
+  
+  @@map("seasons")
+}
+
+// Weekend Session model - Each Saturday session
+model WeekendSession {
+  id               String   @id @default(cuid())
+  seasonId         String   @map("season_id")
+  sessionDate      DateTime @map("session_date")
+  sessionName      String   @map("session_name") // e.g., "Saturday Session - Week 1"
+  winnerTeamId     String?  @map("winner_team_id")
+  totalGames       Int      @default(0) @map("total_games")
+  isCompleted      Boolean  @default(false) @map("is_completed")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  season           Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  teams            Team[]
+  games            Game[]
+  winnerTeam       Team?    @relation("WinnerTeam", fields: [winnerTeamId], references: [id])
+  
+  @@map("weekend_sessions")
+}
+
+// Team model - Teams formed for each weekend session
+model Team {
+  id               String   @id @default(cuid())
+  sessionId        String   @map("session_id")
+  teamName         String   @map("team_name") // e.g., "Team A", "Team B"
+  points           Int      @default(0)
+  goalsFor         Int      @default(0) @map("goals_for")
+  goalsAgainst     Int      @default(0) @map("goals_against")
+  wins             Int      @default(0)
+  draws            Int      @default(0)
+  losses           Int      @default(0)
+  gamesPlayed      Int      @default(0) @map("games_played")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  session          WeekendSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  teamPlayers      TeamPlayer[]
+  homeGames        Game[]   @relation("HomeTeam")
+  awayGames        Game[]   @relation("AwayTeam")
+  goals            Goal[]
+  wonSessions      WeekendSession[] @relation("WinnerTeam")
+
+  @@map("teams")
+}
+
+// Team Players model - Many-to-many relationship between teams and players
+model TeamPlayer {
+  id               String   @id @default(cuid())
+  teamId           String   @map("team_id")
+  playerId         String   @map("player_id")
+  goalsScored      Int      @default(0) @map("goals_scored")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  // Relations
+  team             Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  player           Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, playerId])
+  @@map("team_players")
+}
+
+// Game model - Individual games within weekend sessions
+model Game {
+  id               String   @id @default(cuid())
+  sessionId        String   @map("session_id")
+  homeTeamId       String   @map("home_team_id")
+  awayTeamId       String   @map("away_team_id")
+  homeScore        Int      @default(0) @map("home_score")
+  awayScore        Int      @default(0) @map("away_score")
+  roundNumber      Int      @map("round_number")
+  gameNumber       Int      @map("game_number")
+  isCompleted      Boolean  @default(false) @map("is_completed")
+  playedAt         DateTime? @map("played_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  session          WeekendSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  homeTeam         Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam         Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  goals            Goal[]
+
+  @@map("games")
+}
+
+// Goal model - Individual goals scored in games
+model Goal {
+  id               String   @id @default(cuid())
+  gameId           String   @map("game_id")
+  playerId         String   @map("player_id")
+  teamId           String   @map("team_id")
+  minute           Int?     @default(0) // Minute when goal was scored
+  goalType         String   @default("regular") @map("goal_type") // regular, penalty, own_goal, etc.
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  // Relations
+  game             Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  player           Player   @relation(fields: [playerId], references: [id])
+  team             Team     @relation(fields: [teamId], references: [id])
+
+  @@map("goals")
+}
